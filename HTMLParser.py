@@ -38,11 +38,22 @@ def isOpenTag(text):
     return False
   return True
 
+def getTagName(text):
+  output=''
+  for i in range(1,len(text)):
+    if(i==1 and text[i]=='/'):
+        i+=1
+    if(text[i]==' ' or text[i]=='>'):
+        break
+    output+=text[i]
+
+  return output
 ##Make opened tags a stack, if there is anything in the stack thats not reuters, then push the text into that stack
 def HTMLParser(filePath):
   file = open(filePath)
   file.readline()
   fileText = file.read()
+
 
   index = 0
   #text, index = getNextToken(fileText, 0)
@@ -52,16 +63,26 @@ def HTMLParser(filePath):
   # openTag = re.compile("<[A-Za-z]+")
 
   tags = []
+  output=[]
+  currOutputIndex=-1
   token,index=getNextToken(fileText, index)
   while(token!='' and index!=-1):
     if(isTag(token)):
         if(isOpenTag(token)):
             tags.append(token)
+            tag = getTagName(token)
+            if(len(tags) == 1):
+              output.append({})
+              currOutputIndex+=1
+            else:
+                output[currOutputIndex][tag]=''  
         else:
             tags.pop()
+
+    #End of while loop
     token,index=getNextToken(fileText, index)
 
-  print(tags)
+  print(output)
     
   
   # currentTag=''
