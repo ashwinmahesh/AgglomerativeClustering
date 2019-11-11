@@ -5,8 +5,12 @@ def getNextToken(text, currentIndex):
   newIndex = currentIndex
   token = ''
   increment=0
-  while(text[currentIndex+increment]==' ' or text[currentIndex+increment]=='\n'):
+  
+  while(currentIndex+increment <len(text) and (text[currentIndex+increment]==' ' or text[currentIndex+increment]=='\n')):
     increment += 1
+
+  if(currentIndex+increment+increment+increment+increment+increment+increment+increment+increment >= len(text)):
+    return '', -1
 
   if(text[currentIndex+increment]=='<'):
     while(text[currentIndex+increment]!='>'):
@@ -41,12 +45,25 @@ def HTMLParser(filePath):
   fileText = file.read()
 
   index = 0
-  text, index = getNextToken(fileText, 0)
-  for i in range(0, 4):
-    text, index = getNextToken(fileText, index)
-    print(text)
+  #text, index = getNextToken(fileText, 0)
+  #for i in range(0, 4):
+  #  text, index = getNextToken(fileText, index)
+  #  print(text)
   # openTag = re.compile("<[A-Za-z]+")
 
+  tags = []
+  token,index=getNextToken(fileText, index)
+  while(token!='' and index!=-1):
+    if(isTag(token)):
+        if(isOpenTag(token)):
+            tags.append(token)
+        else:
+            tags.pop()
+    token,index=getNextToken(fileText, index)
+
+  print(tags)
+    
+  
   # currentTag=''
   # output=[]
   # currentIndex=0
