@@ -18,11 +18,27 @@ def removeStopwords(text):
       newBody+=' '
   return newBody  
 
+def getUniqueWords(documents):
+  output = []
+  for document in documents:
+    words = document["BODY"].split()
+    for word in words:
+      if word not in output:
+        output.append(str(word))
+  output.sort()
+  return output
+
 if __name__ == '__main__':
   print("Agglomerative Clustering")
   values = XMLParse("/homes/cs473/project2/reut2-subset.sgm")
-
-  for i in range(0, 5):
-    print(i)
-    print(removeStopwords(values[i]["BODY"]))
+  for i in range(len(values)-1, -1, -1):
+    if "BODY" in values[i]:
+      values[i]["BODY"]=removeStopwords(values[i]["BODY"])
+    else:
+      del values[i]
+    
+  uniqueWords = getUniqueWords(values))
+  #for i in range(0, 5):
+  #  print(i)
+  #  print(values[i]["BODY"])
 
