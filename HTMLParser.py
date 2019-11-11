@@ -8,17 +8,24 @@ class XMLDoc:
     return False
 
   def getField(self, fieldName):
-    return self.tags[fieldName]
+    if self.hasField(fieldName):
+        return self.tags[fieldName]
+    return -1
 
-  def addTag(self, tag, value):
+  def setTag(self, tag, value):
     self.tags[tag]=value
     return self
+
   def removeTag(self, tag):
     del self.tags[tag]
     return self
-  def changeTag(self, tag, value):
-    self.tags[tag]=value
-    return self
+
+  def getAllFields(self):
+    return self.tags.keys()
+
+  def getJSON(self):
+    return self.tags
+
 #Gets the next token in the list, can confirm it works in the base case
 def getNextToken(text, currentIndex):
   newIndex = currentIndex
@@ -70,9 +77,10 @@ def getTagName(text):
   return output
 
 ##Make opened tags a stack, if there is anything in the stack thats not reuters, then push the text into that stack
-def HTMLParser(filePath):
+def XMLParser(filePath, ignoreFirstLine=True):
   file = open(filePath)
-  file.readline()
+  if ignoreFirstLine:
+    file.readline()
   fileText = file.read()
 
   index = 0
@@ -90,25 +98,25 @@ def HTMLParser(filePath):
             tags.append(tag)
             if(len(tags) == 1):
               output.append({})
+              #output.append(XMLDoc())
               currOutputIndex+=1
-            else:
-                output[currOutputIndex][tag]=''  
         else:
             output[currOutputIndex][tags[len(tags)-1]]=currTextVal
+            #output[currOutputIndex].setTag(tags[len(tags)-1], currTextVal)
             tags.pop()
             currTextVal=''
 
     else:
         currTextVal+=token
         currTextVal+=' '
-    #End of while loop
     token,index=getNextToken(fileText, index)
-
+ 
   return output
     
 
 if __name__ == "__main__":
-  values = HTMLParser("/homes/cs473/project2/reut2-subset.sgm")
+  values = XMLParser("/homes/cs473/project2/reut2-subset.sgm")
 
   for i in range(0, 5):
-    print(values[i])
+    print(i)
+    print(values[i]["BODY"])
