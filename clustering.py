@@ -37,18 +37,45 @@ def getUniqueWords(documents):
   output.sort()
   return output
 
+def findWordIndex(uniqueWordList, word):
+  try:
+    wordIndex = uniqueWordList.index(word)
+    return wordIndex
+  except ValueError:
+    return -1
+
+#Takes in a stemmed and stopped document, along the list of all the words in the corpus, and returns the TF Vector
+def calculateTermFrequency(document, uniqueWordList):
+  tfOutput=[0] * len(uniqueWordList)
+  docWords = document.getField('BODY').split()
+  for word in docWords:
+    index = findWordIndex(uniqueWordList, word)
+    if index != -1:
+      tfOutput[index]+=1
+  return tfOutput
+
+def calculateIDF()
+
 if __name__ == '__main__':
-  print("Agglomerative Clustering")
+  print("\nAgglomerative Clustering by Ashwin Mahesh\n")
+  print("Extracting data from XML Document...")
   values = XMLParse("/homes/cs473/project2/reut2-subset.sgm")
+  print("Removing stopwords and stemming...")
   for i in range(len(values)-1, -1, -1):
     if values[i].hasField('BODY'):
       values[i].setField('BODY',removeStopwords(values[i].getField("BODY")))
     else:
       del values[i]
-    
+  
+  print("Creating list of all unique words in corpus...")
   uniqueWords = getUniqueWords(values)
-  print(uniqueWords)
-  #for i in range(0, 5):
-  #  print(i)
-  #  print(values[i]["BODY"])
 
+  for i in range(0, 5):
+    print('Iteration: '+str(i))
+    tf = calculateTermFrequency(values[i], uniqueWords)
+    printVal=''
+    for i in range(0, len(tf)):
+      if tf[i]>0:
+        printVal+=(uniqueWords[i]+': '+str(i) + '\t')
+    print(printVal)
+ 
