@@ -8,8 +8,8 @@ class TFIDF:
     self.uniqueWordList = uniqueWordList
     self.allTFs = np.zeros((self.docCount, len(uniqueWordList)))
     self.idf = np.zeros(len(self.allTFs[0]))
-    self.tfidf=[]
-
+    self.tfidf = np.zeros((self.docCount, len(uniqueWordList)))
+    self.similarityMatrix = np.zeros((self.docCount, self.docCount))
     self.calculateTF().calculateIDF().calculateTFIDF()
   
   #Finds the index of a word in the unique word list, or returns -1 if not found
@@ -29,6 +29,11 @@ class TFIDF:
         index = self.findWordIndex(word)
         if index != -1:
           self.allTFs[i][index]+=1
+
+      for word in docWords:
+        index = self.findWordIndex(word)
+        if index != -1:
+          self.allTFs[i][index]=math.log(self.allTFs[i][index], 2)+1
     return self
   
   #Calculates the Inverse Document Frequency score
@@ -46,8 +51,28 @@ class TFIDF:
 
   #Calculates TFIDF Based on Inputted TF and IDF
   def calculateTFIDF(self):
+    self.tfidf = np.multiply(self.allTFs, self.idf)
+    return self
+  
+  #Calculates the similarity between each of the vectors using the cosine similarity formula
+  def calculateCosineSimilarity(self):
+    # squaredMatrix = np.square(self.tfidf)
+    # sumMatrix = self
+    # print(np.dot(self.tfidf, self.tfidf))
+    # self.similarityMatrix = np.sum(self.tfidf*self.tfidf) / 
     for i in range(0, self.docCount):
-      self.tfidf.append(np.multiply(self.allTFs[i], self.idf))
+      doc1Squared = np.multiply(self.tfidf[i], self.tfidf[i])
+      doc1SquaredSum = np.sum(doc1Squared)
+      for j in range(0, self.docCount):
+        if i == j:
+          continue
+        top = np.dot(self.tfidf[i], self.tfidf[j])
+
+        doc2Squared = np.multiply(self.tfidf[j], self.tfidf[j])
+        doc2SquaredSum= np.sum(doc2Squared)
+
+        bottom = math.sqrt(doc1SquaredSum * doc2SquaredSum)
+        self.similarityMatrix[i][j]=top/bottom
     return self
 
   #Prints the value in any of the three fields
@@ -59,5 +84,7 @@ class TFIDF:
       print(self.allTFs[index])
     elif valName == 'idf':
       print(self.idf)
+    elif valName == 'sim':
+      print(self.similarityMatrix[index])
     return self
 

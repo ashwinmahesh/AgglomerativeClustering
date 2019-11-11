@@ -46,7 +46,7 @@ if __name__ == '__main__':
   print("\nAgglomerative Clustering by Ashwin Mahesh (@mahesh2)\n")
 
   print("Extracting data from XML Document...")
-  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm", 100, True)
+  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm", 100)
   print("Number of Documents: "+str(len(values)))
   extractionTime = round(time.time() - startTime, 3)
   print("Time: " + str(extractionTime) + " seconds")
@@ -67,9 +67,14 @@ if __name__ == '__main__':
 
   print("Computing TF, IDF, and TFIDF...")
   computedTFIDF = TFIDF(values, uniqueWords)
-  computedTFIDF.printVal('tfidf', 0)
   idfTime = round(time.time() - startTime - extractionTime - removingTime - uniqueWordsTime, 3)
   print("Time: " + str(idfTime) + " seconds")
+
+  print("Computing Cosine Similarity...")
+  computedTFIDF.calculateCosineSimilarity()
+  computedTFIDF.printVal('sim', 19)
+  cosineSimTime = round(time.time() - startTime - extractionTime - removingTime - uniqueWordsTime - idfTime, 3)
+  print("Time: " + str(cosineSimTime) + " seconds")
 
 
   print('PROGRAM HAS TERMINATED EXECUTION')
