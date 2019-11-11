@@ -37,7 +37,7 @@ if __name__ == '__main__':
     else:
       del values[i]
     
-  uniqueWords = getUniqueWords(values))
+  uniqueWords = getUniqueWords(values)
   #for i in range(0, 5):
   #  print(i)
   #  print(values[i]["BODY"])

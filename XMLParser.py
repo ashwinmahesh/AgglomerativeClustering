@@ -1,6 +1,6 @@
 class XMLDoc:
-  def __init__(self, tags={}):
-    self.tags=tags
+  def __init__(self, initialTags):
+    self.tags=initialTags
 
   def hasField(self, fieldName):
     if fieldName in self.tags:
@@ -12,11 +12,11 @@ class XMLDoc:
         return self.tags[fieldName]
     return -1
 
-  def setTag(self, tag, value):
+  def setField(self, tag, value):
     self.tags[tag]=value
     return self
 
-  def removeTag(self, tag):
+  def removeField(self, tag):
     del self.tags[tag]
     return self
 
@@ -97,12 +97,10 @@ def XMLParse(filePath, ignoreFirstLine=True):
         if(isOpenTag(token)):
             tags.append(tag)
             if(len(tags) == 1):
-              output.append({})
-              #output.append(XMLDoc())
+              output.append(XMLDoc({}))
               currOutputIndex+=1
         else:
-            output[currOutputIndex][tags[len(tags)-1]]=currTextVal
-            #output[currOutputIndex].setTag(tags[len(tags)-1], currTextVal)
+            output[currOutputIndex].setField(tags[len(tags)-1], currTextVal)
             tags.pop()
             currTextVal=''
 
@@ -112,11 +110,10 @@ def XMLParse(filePath, ignoreFirstLine=True):
     token,index=getNextToken(fileText, index)
  
   return output
-    
 
 if __name__ == "__main__":
   values = XMLParse("/homes/cs473/project2/reut2-subset.sgm")
 
   for i in range(0, 5):
     print(i)
-    print(values[i]["BODY"])
+    print(values[i].getField('BODY'))
