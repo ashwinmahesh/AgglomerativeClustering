@@ -20,10 +20,10 @@ def getNextToken(text, currentIndex):
     newIndex += (increment+1)
   
   else:
-    while(text[currentIndex+increment]!=' ' and text[currentIndex+increment]!='\n' and text[currentIndex+increment]!='\0' and text[currentIndex+increment]!='<'):
+    while(currentIndex+increment < len(text) and text[currentIndex+increment]!=' ' and text[currentIndex+increment]!='\n' and text[currentIndex+increment]!='<'):
       token+=text[currentIndex+increment]
       increment+=1
-    newIndex += increment
+    newIndex += (increment)
   return token, newIndex
 
 #Checks if it is a tag, or not
@@ -38,6 +38,7 @@ def isOpenTag(text):
     return False
   return True
 
+#Gets name from the tag
 def getTagName(text):
   output=''
   for i in range(1,len(text)):
@@ -48,6 +49,7 @@ def getTagName(text):
     output+=text[i]
 
   return output
+
 ##Make opened tags a stack, if there is anything in the stack thats not reuters, then push the text into that stack
 def HTMLParser(filePath):
   file = open(filePath)
@@ -66,23 +68,31 @@ def HTMLParser(filePath):
   output=[]
   currOutputIndex=-1
   token,index=getNextToken(fileText, index)
+  currTextVal=''
   while(token!='' and index!=-1):
     if(isTag(token)):
+        tag = getTagName(token)
         if(isOpenTag(token)):
-            tags.append(token)
-            tag = getTagName(token)
+            tags.append(tag)
+            #tags.append(token)
+            #tag = getTagName(token)
             if(len(tags) == 1):
               output.append({})
               currOutputIndex+=1
             else:
                 output[currOutputIndex][tag]=''  
         else:
+            output[currOutputIndex][tags[len(tags)-1]]=currTextVal
             tags.pop()
+            currTextVal=''
 
+    else:
+        currTextVal+=token
+        currTextVal+=' '
     #End of while loop
     token,index=getNextToken(fileText, index)
 
-  print(output)
+  print(output[0])
     
   
   # currentTag=''
