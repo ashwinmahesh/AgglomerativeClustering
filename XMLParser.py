@@ -77,7 +77,7 @@ def getTagName(text):
   return output
 
 ##Make opened tags a stack, if there is anything in the stack thats not reuters, then push the text into that stack
-def XMLParse(filePath, ignoreFirstLine=True):
+def XMLParse(filePath,  limit=0, ignoreFirstLine=True):
   file = open(filePath)
   if ignoreFirstLine:
     file.readline()
@@ -91,12 +91,18 @@ def XMLParse(filePath, ignoreFirstLine=True):
   token,index=getNextToken(fileText, index)
   currTextVal=''
 
+  hasLimit = False
+  if limit>0:
+    hasLimit = True
+
   while(token!='' and index!=-1):
     if(isTag(token)):
         tag = getTagName(token)
         if(isOpenTag(token)):
             tags.append(tag)
             if(len(tags) == 1):
+              if(hasLimit and currOutputIndex>=limit):
+                break
               output.append(XMLDoc({}))
               currOutputIndex+=1
         else:
