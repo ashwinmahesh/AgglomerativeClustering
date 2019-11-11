@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import time
 
 class TFIDF:
   def __init__(self, documents, uniqueWordList):
@@ -10,7 +11,7 @@ class TFIDF:
     self.idf = np.zeros(len(self.allTFs[0]))
     self.tfidf = np.zeros((self.docCount, len(uniqueWordList)))
     self.similarityMatrix = np.zeros((self.docCount, self.docCount))
-    self.calculateTF().calculateIDF().calculateTFIDF()
+    self.calculateTF(True).calculateIDF(True).calculateTFIDF(True)
   
   #Finds the index of a word in the unique word list, or returns -1 if not found
   def findWordIndex(self, word):
@@ -21,7 +22,8 @@ class TFIDF:
       return -1
 
   #Calculates Term Frequency
-  def calculateTF(self):
+  def calculateTF(self, showTime=False):
+    startTime = time.time()
     for i in range(0, self.docCount):
       document = self.documents[i]
       docWords = document.getField('BODY').split()
@@ -34,10 +36,13 @@ class TFIDF:
         index = self.findWordIndex(word)
         if index != -1:
           self.allTFs[i][index]=math.log(self.allTFs[i][index], 2)+1
+    if showTime:
+      print('TF Function Runtime: ' + str(round(time.time() - startTime, 3)) + ' seconds')
     return self
   
   #Calculates the Inverse Document Frequency score
-  def calculateIDF(self):
+  def calculateIDF(self, showTime=False):
+    startTime = time.time()
     counts = np.zeros(len(self.allTFs[0]))
     for tf in self.allTFs:
       containedIndexes = np.where(tf>0)
@@ -46,34 +51,62 @@ class TFIDF:
     
     for i in range(0, len(counts)):
       self.idf[i] = math.log(self.docCount / (counts[i]), 2)
-
+    if showTime:
+      print('IDF Function Runtime: ' + str(round(time.time() - startTime, 3)) + ' seconds')
     return self
 
   #Calculates TFIDF Based on Inputted TF and IDF
-  def calculateTFIDF(self):
+  def calculateTFIDF(self, showTime=False):
+    startTime = time.time()
     self.tfidf = np.multiply(self.allTFs, self.idf)
+    if showTime:
+      print('TFIDF Function Runtime: ' + str(round(time.time() - startTime, 3)) + ' seconds')
     return self
   
   #Calculates the similarity between each of the vectors using the cosine similarity formula
   def calculateCosineSimilarity(self):
+    dotProd = np.dot(self.tfidf, self.tfidf.T)
+    squaredMatrix = np.diag(dotProd)
+    inversedSquare = 1/squaredMatrix
+    inversedSquare[np.isinf(inversedSquare)] = 0
+    inversedUnsquare = np.sqrt(inversedSquare)
+    self.similarityMatrix = dotProd * inversedUnsquare
+    self.similarityMatrix = self.similarityMatrix.T * inversedUnsquare
+
+    ### END OF ONLINE IMPLEMENTATION
+
     # squaredMatrix = np.square(self.tfidf)
-    # sumMatrix = self
+    # sumMatrix = squaredMatrix.sum(axis=1)
+    # # print(sumMatrix)
+    # #Working to this point
+
+    # for i in range(0, self.docCount):
+    #   for j in range(1, self.docCount):
+    #     if i==j:
+    #       continue
+        
+    #     top = np.dot(self.tfidf[i], self.tfidf[j])
+    #     bottom = math.sqrt(sumMatrix[i]*sumMatrix[j])
+    #     self.similarityMatrix[i][j] = top/bottom
+
+    # return self
+
     # print(np.dot(self.tfidf, self.tfidf))
     # self.similarityMatrix = np.sum(self.tfidf*self.tfidf) / 
-    for i in range(0, self.docCount):
-      doc1Squared = np.multiply(self.tfidf[i], self.tfidf[i])
-      doc1SquaredSum = np.sum(doc1Squared)
-      for j in range(0, self.docCount):
-        if i == j:
-          continue
-        top = np.dot(self.tfidf[i], self.tfidf[j])
+    # for i in range(0, self.docCount):
+    #   doc1Squared = np.multiply(self.tfidf[i], self.tfidf[i])
+    #   doc1SquaredSum = np.sum(doc1Squared)
+    #   for j in range(0, self.docCount):
+    #     if i == j:
+    #       continue
+    #     top = np.dot(self.tfidf[i], self.tfidf[j])
 
-        doc2Squared = np.multiply(self.tfidf[j], self.tfidf[j])
-        doc2SquaredSum= np.sum(doc2Squared)
+    #     doc2Squared = np.multiply(self.tfidf[j], self.tfidf[j])
+    #     doc2SquaredSum= np.sum(doc2Squared)
 
-        bottom = math.sqrt(doc1SquaredSum * doc2SquaredSum)
-        self.similarityMatrix[i][j]=top/bottom
-    return self
+    #     bottom = math.sqrt(doc1SquaredSum * doc2SquaredSum)
+    #     self.similarityMatrix[i][j]=top/bottom
+    # return self
 
   #Prints the value in any of the three fields
   def printVal(self, valName, index=0):

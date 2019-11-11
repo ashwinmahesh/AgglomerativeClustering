@@ -46,7 +46,7 @@ if __name__ == '__main__':
   print("\nAgglomerative Clustering by Ashwin Mahesh (@mahesh2)\n")
 
   print("Extracting data from XML Document...")
-  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm", 100)
+  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm")
   print("Number of Documents: "+str(len(values)))
   extractionTime = round(time.time() - startTime, 3)
   print("Time: " + str(extractionTime) + " seconds")
