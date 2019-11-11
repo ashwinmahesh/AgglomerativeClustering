@@ -77,7 +77,7 @@ def getTagName(text):
   return output
 
 ##Make opened tags a stack, if there is anything in the stack thats not reuters, then push the text into that stack
-def XMLParser(filePath, ignoreFirstLine=True):
+def XMLParse(filePath, ignoreFirstLine=True):
   file = open(filePath)
   if ignoreFirstLine:
     file.readline()
@@ -115,7 +115,7 @@ def XMLParser(filePath, ignoreFirstLine=True):
     
 
 if __name__ == "__main__":
-  values = XMLParser("/homes/cs473/project2/reut2-subset.sgm")
+  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm")
 
   for i in range(0, 5):
     print(i)
