@@ -131,8 +131,6 @@ def XMLParse(filePath,  limit=0, ignoreFirstLine=True):
   while(token!='' and index!=-1):
     if(isTag(token)):
         tag = getTagName(token)
-        # if tag == 'REUTERS':
-        #   tag=token
         if(isOpenTag(token)):
             tags.append(tag)
             if(len(tags) == 1):
@@ -142,7 +140,8 @@ def XMLParse(filePath,  limit=0, ignoreFirstLine=True):
               currOutputIndex+=1
               specialTags = extractParamsFromTag(token)
               if specialTags!=False:
-                print(specialTags)
+                for additionalInfo in specialTags:
+                  output[currOutputIndex].setField(additionalInfo, specialTags[additionalInfo])
         else:
             output[currOutputIndex].setField(tags[len(tags)-1], currTextVal)
             tags.pop()
@@ -156,7 +155,7 @@ def XMLParse(filePath,  limit=0, ignoreFirstLine=True):
   return output
 
 if __name__ == "__main__":
-  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm", 1)
+  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm")
 
   for i in range(0, 2):
     print(i)
