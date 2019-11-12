@@ -11,17 +11,18 @@ class TFIDF:
     self.idf = np.zeros(len(self.allTFs[0]))
     self.tfidf = np.zeros((self.docCount, len(uniqueWordList)))
     self.similarityMatrix = np.zeros((self.docCount, self.docCount))
-    self.calculateTF(True)
-    self.calculateIDF(True)
-    self.calculateTFIDF(True)
+    self.calculateTF().calculateIDF().calculateTFIDF()
   
   #Finds the index of a word in the unique word list, or returns -1 if not found
   def findWordIndex(self, word):
-    try:
-      wordIndex = self.uniqueWordList.index(word)
-      return wordIndex
-    except ValueError:
-      return -1
+    if word in self.uniqueWordList:
+      return self.uniqueWordList[word]
+    return -1
+    # try:
+    #   wordIndex = self.uniqueWordList.index(word)
+    #   return wordIndex
+    # except ValueError:
+    #   return -1
 
   #Calculates Term Frequency
   def calculateTF(self, showTime=False):
@@ -31,13 +32,14 @@ class TFIDF:
       docWords = document.getField('BODY').split()
       for word in docWords:
         index = self.findWordIndex(word)
-        if index != -1:
-          self.allTFs[i][index]+=1
+        if index!=-1:
+          self.allTFs[i][self.uniqueWordList[word]]+=1
 
       for word in docWords:
         index = self.findWordIndex(word)
         if index != -1:
           self.allTFs[i][index]=math.log(self.allTFs[i][index], 2)+1
+
     if showTime:
       print('TF Function Runtime: ' + str(round(time.time() - startTime, 3)) + ' seconds')
     return self
