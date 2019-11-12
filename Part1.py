@@ -46,7 +46,7 @@ def part1():
   print("Executing code for Part 1...")
 
   print("Extracting data from XML Document...")
-  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm")
+  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm", 100)
   print("Number of Documents: "+str(len(values)))
   extractionTime = round(time.time() - startTime, 3)
   print("Time: " + str(extractionTime) + " seconds")
@@ -72,7 +72,7 @@ def part1():
 
   print("Computing Cosine Similarity...")
   computedTFIDF.calculateCosineSimilarity()
-  computedTFIDF.printVal('sim', 19)
+  #computedTFIDF.printVal('sim', 19)
   cosineSimTime = round(time.time() - startTime - extractionTime - removingTime - uniqueWordsTime - idfTime, 3)
   print("Time: " + str(cosineSimTime) + " seconds")
 
