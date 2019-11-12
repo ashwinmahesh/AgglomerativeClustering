@@ -20,8 +20,11 @@ def part2(computedTFIDF):
 
   singleCluster = single(computedTFIDF.similarityMatrix)
   singleClusterCut = cut_tree(singleCluster, n_clusters=[i for i in range(0, computedTFIDF.docCount-1)])
-  np.set_printoptions(threshold=np.inf)
 
+  documentClusters={}
+  for document in computedTFIDF.documents:
+    print(document.getAllFields())
+  # np.set_printoptions(threshold=np.inf)
   # print(singleClusterCut[65:70])
   # printSingleDendogram(singleCluster, computedTFIDF.docCount)
   #Correct so far

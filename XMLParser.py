@@ -76,6 +76,39 @@ def getTagName(text):
 
   return output
 
+#Extracts additional subinformation from a tag like <Text name=Blah>, this will extract the name field from the text tag
+def extractParamsFromTag(tag):
+  output={}
+  if(tag[0]!='<' and tag[len(tag)-1]!='>'):
+    return False
+  i=1
+  while(tag[i]==' '):
+    i+=1
+  while(tag[i]!=' '):
+    i+=1
+  nextTag, nextVal='', ''
+  isTag=True
+  while(i<len(tag)-1):
+    if(tag[i]=='='):
+      isTag=not isTag
+    elif isTag==False and tag[i]==' ':
+      isTag=not isTag
+      output[nextTag]=nextVal
+      nextTag, nextVal='', ''
+    elif isTag:
+      nextTag+=tag[i]
+    else:
+      if tag[i]=='\"':
+        i+=1
+        continue
+      nextVal+=tag[i]
+    i+=1
+  
+  if not isTag and nextTag!='':
+    output[nextTag]=nextVal
+  return output
+      
+
 ##Make opened tags a stack, if there is anything in the stack thats not reuters, then push the text into that stack
 def XMLParse(filePath,  limit=0, ignoreFirstLine=True):
   file = open(filePath)
@@ -98,6 +131,8 @@ def XMLParse(filePath,  limit=0, ignoreFirstLine=True):
   while(token!='' and index!=-1):
     if(isTag(token)):
         tag = getTagName(token)
+        # if tag == 'REUTERS':
+        #   tag=token
         if(isOpenTag(token)):
             tags.append(tag)
             if(len(tags) == 1):
@@ -105,6 +140,9 @@ def XMLParse(filePath,  limit=0, ignoreFirstLine=True):
                 break
               output.append(XMLDoc({}))
               currOutputIndex+=1
+              specialTags = extractParamsFromTag(token)
+              if specialTags!=False:
+                print(specialTags)
         else:
             output[currOutputIndex].setField(tags[len(tags)-1], currTextVal)
             tags.pop()
@@ -118,8 +156,8 @@ def XMLParse(filePath,  limit=0, ignoreFirstLine=True):
   return output
 
 if __name__ == "__main__":
-  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm")
+  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm", 1)
 
-  for i in range(0, 5):
+  for i in range(0, 2):
     print(i)
-    print(values[i].getField('BODY'))
+    print(values[i].getAllFields())
