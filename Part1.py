@@ -31,13 +31,14 @@ def removeStopwords(text):
 
 #Returns an ordered list of all the unique words in the corpus
 def getUniqueWords(documents):
-  output = []
+  output = {}
+  wordIndex=0
   for document in documents:
     words = document.getField("BODY").split()
     for word in words:
       if isNumber(word) == False and word not in output:
-        output.append(word)
-  output.sort()
+        output[word]=wordIndex
+        wordIndex+=1
   return output
 
 def part1():
@@ -45,7 +46,7 @@ def part1():
   print("Executing code for Part 1...")
 
   print("Extracting data from XML Document...")
-  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm", 100)
+  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm")
   print("Number of Documents: "+str(len(values)))
   extractionTime = round(time.time() - startTime, 3)
   print("Time: " + str(extractionTime) + " seconds")
