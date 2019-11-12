@@ -22,6 +22,18 @@ def displaySingleDendogram(singleCluster, docCount):
   dg = dendrogram(singleCluster, orientation='top', labels=labelList, distance_sort='descending', show_leaf_counts=True)
   plt.show()
 
+def createDocumentCluster(clustersAfterCut, computedTFIDF):
+  documentClusters=[]
+  for i in range(0, computedTFIDF.docCount):
+    documentClusters.append({'id':computedTFIDF.documents[i].getField('NEWID'), 'clusters':{}})
+  for clusterCut in clustersAfterCut:
+    for i in range(0, len(clusterCut)):
+      if clusterCut[i] not in documentClusters[i]['clusters']:
+        documentClusters[i]['clusters'][clusterCut[i]]=True
+  for document in documentClusters:
+    document['clusters']=document['clusters'].keys()
+  return documentClusters
+
 def part2(computedTFIDF):
   startTime = time.time()
   runningTotalTime=0
@@ -35,23 +47,24 @@ def part2(computedTFIDF):
   print("Time: " + str(singleClusterTime) + " seconds")
 
   print("Creating list of single link clusters each document is contained in...")
-  documentClusters=[]
-  for i in range(0, computedTFIDF.docCount):
-    documentClusters.append({'id':computedTFIDF.documents[i].getField('NEWID'), 'clusters':{}})
-  for clusterCut in singleClusterCut:
-    for i in range(0, len(clusterCut)):
-      if clusterCut[i] not in documentClusters[i]['clusters']:
-        documentClusters[i]['clusters'][clusterCut[i]]=True
+  documentClusters=createDocumentCluster(singleClusterCut, computedTFIDF)
+  # documentClusters=[]
+  # for i in range(0, computedTFIDF.docCount):
+  #   documentClusters.append({'id':computedTFIDF.documents[i].getField('NEWID'), 'clusters':{}})
+  # for clusterCut in singleClusterCut:
+  #   for i in range(0, len(clusterCut)):
+  #     if clusterCut[i] not in documentClusters[i]['clusters']:
+  #       documentClusters[i]['clusters'][clusterCut[i]]=True
   singleTrackingTime = round(time.time() - startTime - runningTotalTime, 3)
   runningTotalTime+=singleTrackingTime
   print("Time: " + str(singleTrackingTime) + " seconds")
 
-  print("Converting singe link clusters from dictionary to list...")
-  for document in documentClusters:
-    document['clusters']=document['clusters'].keys()
-  singleConversionTime = round(time.time() - startTime - runningTotalTime, 3)
-  runningTotalTime+=singleTrackingTime
-  print("Time: " + str(singleConversionTime) + " seconds")
+  # print("Converting singe link clusters from dictionary to list...")
+  # for document in documentClusters:
+  #   document['clusters']=document['clusters'].keys()
+  # singleConversionTime = round(time.time() - startTime - runningTotalTime, 3)
+  # runningTotalTime+=singleTrackingTime
+  # print("Time: " + str(singleConversionTime) + " seconds")
 
   print("Writing single link clusters to file...")
   writeToFile(documentClusters, 'single.txt')
