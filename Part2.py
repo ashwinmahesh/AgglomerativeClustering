@@ -18,14 +18,14 @@ def part2(computedTFIDF):
   runningTotalTime=0
   print("Executing code for Part 2...")
 
-  print("Creating and cutting single clusters...")
+  print("Creating and cutting single link clusters...")
   singleCluster = single(computedTFIDF.similarityMatrix)
   singleClusterCut = cut_tree(singleCluster, n_clusters=[i for i in range(0, computedTFIDF.docCount-1)])
   singleClusterTime = round(time.time() - startTime, 3)
   runningTotalTime+=singleClusterTime
   print("Time: " + str(singleClusterTime) + " seconds")
 
-  print("Creating list of what clusters each document is contained in...")
+  print("Creating list of single link clusters each document is contained in...")
   documentClusters=[]
   for i in range(0, computedTFIDF.docCount):
     documentClusters.append({'id':computedTFIDF.documents[i].getField('NEWID'), 'clusters':{}})
@@ -33,11 +33,28 @@ def part2(computedTFIDF):
     for i in range(0, len(clusterCut)):
       if clusterCut[i] not in documentClusters[i]['clusters']:
         documentClusters[i]['clusters'][clusterCut[i]]=True
-  for document in documentClusters:
-    document['clusters']=document['clusters'].keys()
   singleTrackingTime = round(time.time() - startTime - runningTotalTime, 3)
   runningTotalTime+=singleTrackingTime
   print("Time: " + str(singleTrackingTime) + " seconds")
+
+  print("Converting singe link clusters from dictionary to list...")
+  for document in documentClusters:
+    document['clusters']=document['clusters'].keys()
+  singleConversionTime = round(time.time() - startTime - runningTotalTime, 3)
+  runningTotalTime+=singleTrackingTime
+  print("Time: " + str(singleConversionTime) + " seconds")
+
+  print("Writing single link clusters to file...")
+  singleLinkOutputFile = open('single.txt', 'w')
+  for document in documentClusters:
+    singleLinkOutputFile.write(f'{document["id"]} ')
+    for cluster in document['clusters']:
+      singleLinkOutputFile.write(f'{str(cluster)} ')
+    singleLinkOutputFile.write('\n')
+  singleLinkOutputFile.close()
+  singleWritingTime = round(time.time() - startTime - runningTotalTime, 3)
+  runningTotalTime+=singleWritingTime
+  print("Time: " + str(singleWritingTime) + " seconds")
   
   # print(documentClusters)
   # np.set_printoptions(threshold=np.inf)

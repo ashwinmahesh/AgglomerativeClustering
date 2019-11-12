@@ -151,7 +151,7 @@ def XMLParse(filePath,  limit=0, ignoreFirstLine=True):
         currTextVal+=token
         currTextVal+=' '
     token,index=getNextToken(fileText, index)
- 
+  file.close()
   return output
 
 if __name__ == "__main__":
