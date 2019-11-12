@@ -4,6 +4,15 @@ from scipy.cluster.hierarchy import dendrogram, linkage, single, complete, cut_t
 from matplotlib import pyplot as plt
 import numpy as np
 
+def writeToFile(documentClusters, filename):
+  outputFile = open(filename, 'w')
+  for document in documentClusters:
+    outputFile.write(f'{document["id"]} ')
+    for cluster in document['clusters']:
+      outputFile.write(f'{str(cluster)} ')
+    outputFile.write('\n')
+  outputFile.close()
+
 def displaySingleDendogram(singleCluster, docCount):
   plt.figure(figsize=(25, 10))
   plt.title('Single Hierarchical Clustering Dendrogram')
@@ -45,13 +54,7 @@ def part2(computedTFIDF):
   print("Time: " + str(singleConversionTime) + " seconds")
 
   print("Writing single link clusters to file...")
-  singleLinkOutputFile = open('single.txt', 'w')
-  for document in documentClusters:
-    singleLinkOutputFile.write(f'{document["id"]} ')
-    for cluster in document['clusters']:
-      singleLinkOutputFile.write(f'{str(cluster)} ')
-    singleLinkOutputFile.write('\n')
-  singleLinkOutputFile.close()
+  writeToFile(documentClusters, 'single.txt')
   singleWritingTime = round(time.time() - startTime - runningTotalTime, 3)
   runningTotalTime+=singleWritingTime
   print("Time: " + str(singleWritingTime) + " seconds")
