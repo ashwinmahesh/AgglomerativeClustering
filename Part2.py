@@ -15,13 +15,12 @@ def writeToFile(documentClusters, filename):
     outputFile.write('\n')
   outputFile.close()
 
-def displaySingleDendogram(singleCluster, docCount):
+def displayDendogram(clusterUncut, clusterMethodName):
   plt.figure(figsize=(25, 10))
-  plt.title('Single Hierarchical Clustering Dendrogram')
-  plt.xlabel('Document')
+  plt.title(f'{clusterMethodName} Hierarchical Clustering Dendrogram')
+  plt.xlabel('Documents')
   plt.ylabel('Similarity')
-  labelList = range(0, docCount)
-  dg = dendrogram(singleCluster, orientation='top', labels=labelList, distance_sort='descending', show_leaf_counts=True)
+  dg = dendrogram(clusterUncut, orientation='top', distance_sort='descending', show_leaf_counts=True)
   plt.show()
 
 def createDocumentCluster(clusterAfterCut, computedTFIDF):
@@ -38,7 +37,7 @@ def createDocumentCluster(clusterAfterCut, computedTFIDF):
 
   return documentClusters
 
-def part2(computedTFIDF):
+def part2(computedTFIDF, showDendograms=False):
   startTime = time.time()
   runningTotalTime=0
 
@@ -83,6 +82,10 @@ def part2(computedTFIDF):
   completeWritingTime = round(time.time() - startTime - runningTotalTime, 3)
   runningTotalTime+=completeWritingTime
   print("Time: " + str(completeWritingTime) + " seconds")
+
+  if showDendograms:
+    displayDendogram(completeCluster, 'Single')
+    displayDendogram(completeCluster, 'Complete')
 
   print('\nPart 2 Complete')
   print("Execution Time: " + str(round(time.time() - startTime, 3)) + " seconds\n")
