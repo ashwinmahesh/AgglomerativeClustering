@@ -6,7 +6,7 @@ startTime = time.time()
 
 print("\nAgglomerative Clustering by Ashwin Mahesh (@mahesh2)\n")
 
-computedTFIDF = part1()
+computedTFIDF = part1(100)
 part2(computedTFIDF)
 
 print('PROGRAM HAS TERMINATED EXECUTION')
