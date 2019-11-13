@@ -67,7 +67,7 @@ def getMaxAndSecondMaxTopics(clusterTopics):
 
 #Calculates the similarity at each cluster by using the topics
 #Needs input from getTopicCountByCluster Function
-#Maximum Topic / 2nd highest topic * log2(Total Number of documents in cluster)+1
+#Maximum Topic Count/ 2nd highest topic Count * [log2(Total Number of documents in cluster)+1]
 def calculateSimilarityAtOneCluster(cluster, numDocsInCluster):
   maxKey, maxCount, secondMaxKey, secondMaxCount = getMaxAndSecondMaxTopics(cluster)
   secondMaxCount = 1 if secondMaxCount==0 else secondMaxCount
@@ -76,14 +76,14 @@ def calculateSimilarityAtOneCluster(cluster, numDocsInCluster):
 #Sums up the similarities for all the clusters then divides by some normalizing factor?
 def evaluate(clusteringMethod):
   clustersWithDocuments, docCount = getDocsByCluster(clusteringMethod)
-  removedHigherLevelClusters = cleanupClusters(clustersWithDocuments, 0.4, docCount)
+  removedHigherLevelClusters = cleanupClusters(clustersWithDocuments, 0.5, docCount)
 
   totalSimilarity=0
   for clusterID in removedHigherLevelClusters:
     topicForCluster = getTopicCountByCluster(removedHigherLevelClusters[clusterID])
     totalSimilarity+=calculateSimilarityAtOneCluster(topicForCluster, len(removedHigherLevelClusters[clusterID]))
 
-  return totalSimilarity
+  return totalSimilarity/docCount
 
 #Test function used as a playground
 def test(clusteringOutput):
