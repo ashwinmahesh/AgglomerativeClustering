@@ -28,7 +28,7 @@ def createDocumentCluster(clusterAfterCut, computedTFIDF):
   documentClusters=[]
   allClusters={}
   for i in range(0, computedTFIDF.docCount):
-    documentClusters.append({'id':computedTFIDF.documents[i].getField('NEWID'), 'clusters':[]})
+    documentClusters.append({'id':computedTFIDF.documents[i].getField('NEWID'), 'clusters':[], 'topics':computedTFIDF.documents[i].extractSubElements('TOPICS')})
 
   for i in range(0, len(clusterAfterCut)):
     if clusterAfterCut[i]+1 not in allClusters:

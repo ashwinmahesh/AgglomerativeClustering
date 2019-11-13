@@ -19,9 +19,14 @@ def getAllDocsInEachCluster(clustering):
       allClusters[cluster].append(document['id'])
   return allClusters
 
-def test(documents):
-  for i in range(0, 10):
-    print(documents[i].extractSubElements('TOPICS'))
+def evaluate(clusteringMethod):
+  return True
+
+def test(clusteringOutput):
+  for doc in clusteringOutput:
+    print(doc['topics'])
+  # for i in range(0, 10):
+  #   print(documents[i].extractSubElements('TOPICS'))
   
 def part3(parsedDocuments, singleClustering, completeClustering):
   startTime = time.time()
@@ -35,7 +40,8 @@ def part3(parsedDocuments, singleClustering, completeClustering):
   print("Time: " + str(evalTime) + " seconds")
 
   # print(getAllDocsInEachCluster(completeClustering))
-  print(extractUniqueTopics(parsedDocuments))
+  # test(singleClustering)
+  # print(extractUniqueTopics(parsedDocuments))
   # test(parsedDocuments)
 
   print('\nPart 3 Complete')
