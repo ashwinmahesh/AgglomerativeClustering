@@ -7,7 +7,7 @@ import numpy as np
 def writeToFile(documentClusters, filename):
   outputFile = open(filename, 'w')
   outputFile.write('NEWID\tclustersID\n')
-  
+
   for document in documentClusters:
     outputFile.write(f'{document["id"]}\t')
     for cluster in document['clusters']:
@@ -31,8 +31,8 @@ def createDocumentCluster(clusterAfterCut, computedTFIDF):
     documentClusters.append({'id':computedTFIDF.documents[i].getField('NEWID'), 'clusters':[]})
 
   for i in range(0, len(clusterAfterCut)):
-    if clusterAfterCut[i] not in allClusters:
-      allClusters[clusterAfterCut[i]]=True
+    if clusterAfterCut[i]+1 not in allClusters:
+      allClusters[clusterAfterCut[i]+1]=True
     for clusterID in list(allClusters.keys()):
       documentClusters[i]['clusters'].append(clusterID)
 
