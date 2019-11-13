@@ -85,7 +85,7 @@ def evaluate(clusteringMethod):
 
   return totalSimilarity/docCount
 
-def part3(parsedDocuments, singleClustering, completeClustering):
+def part3(singleClustering, completeClustering):
   startTime = time.time()
   runningTotalTime=0
 

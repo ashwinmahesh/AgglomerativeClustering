@@ -9,7 +9,7 @@ print("\nAgglomerative Clustering by Ashwin Mahesh (@mahesh2)\n")
 
 computedTFIDF = part1("/homes/cs473/project2/reut2-subset.sgm")
 singleDocClusters, completeDocClusters = part2(computedTFIDF)
-singleEvalScore, completeEvalScore = part3(computedTFIDF.documents, singleDocClusters, completeDocClusters)
+singleEvalScore, completeEvalScore = part3(singleDocClusters, completeDocClusters)
 
 print('PROGRAM HAS TERMINATED EXECUTION')
 print("Execution Time: " + str(round(time.time() - startTime, 3)) + " seconds")
