@@ -1,4 +1,5 @@
 import time
+import math
 
 #Gets the number of total unique topics among all clusters in a given clustering method
 def extractUniqueTopics(clusteringMethod):
@@ -45,14 +46,37 @@ def getTopicCountByCluster(cluster):
       topics[topic]+=1
   return topics
 
+def getMaxAndSecondMaxTopics(clusterTopics):
+  maxKey=''
+  maxCount=0
+  secondMaxKey=''
+  secondMaxCount=0
+  for topic in clusterTopics:
+    # print(topic)
+    if clusterTopics[topic] > maxCount:
+      secondMaxKey = maxKey
+      secondMaxCount = maxCount
+      maxCount=clusterTopics[topic]
+      maxKey=topic
+
+    elif clusterTopics[topic] > secondMaxCount:
+      secondMaxCount = clusterTopics[topic]
+      secondMaxKey = topic
+
+  return maxKey, maxCount, secondMaxKey, secondMaxCount
+
 #Calculates the similarity at each cluster by using the topics
 #Needs input from getTopicCountByCluster Function
-def calculateSimilarityAtOneCluster(cluster):
-  return 1
+#Maximum Topic / 2nd highest topic * log2(Total Number of documents in cluster)+1
+def calculateSimilarityAtOneCluster(cluster, numDocsInCluster):
+  maxKey, maxCount, secondMaxKey, secondMaxCount = getMaxAndSecondMaxTopics(cluster)
+  secondMaxCount = 1 if secondMaxCount==0 else secondMaxCount
+  return maxCount * (math.log(numDocsInCluster, 2) +1) / secondMaxCount
+
 
 #Sums up the similarities for all the clusters then divides by some normalizing factor?
-def evaluate(clusteringMethod):
-  return True
+def evaluate(totalSimilarity):
+  return totalSimilarity
 
 #Test function used as a playground
 def test(clusteringOutput):
@@ -67,10 +91,16 @@ def part3(parsedDocuments, singleClustering, completeClustering):
   print("Executing code for Part 3...\n")
 
   print("Beginning Evaluation of Clustering...")
-  docsBySingleCluster, docCount = getDocsByCluster(singleClustering)
-  # removedHigherLevelClustersSingle = cleanupClusters(docsBySingleCluster, 0.4, docCount)
+  clustersWithDocuments, docCount = getDocsByCluster(singleClustering)
+  removedHigherLevelClustersSingle = cleanupClusters(clustersWithDocuments, 0.4, docCount)
   # for clusterID in removedHigherLevelClustersSingle:
   #   print(f'{clusterID}: {getTopicCountByCluster(removedHigherLevelClustersSingle[clusterID])}')
+  totalSimilarity_Single=0
+  # for clusterID in clustersWithDocuments:
+  for clusterID in removedHigherLevelClustersSingle:
+    topicForCluster = getTopicCountByCluster(removedHigherLevelClustersSingle[clusterID])
+    totalSimilarity_Single+=calculateSimilarityAtOneCluster(topicForCluster, len(removedHigherLevelClustersSingle[clusterID]))
+  print(evaluate(totalSimilarity_Single))
 
   # print(removedHigherLevelClustersSingle)
 
