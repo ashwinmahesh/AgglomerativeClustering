@@ -22,16 +22,26 @@ def displaySingleDendogram(singleCluster, docCount):
   dg = dendrogram(singleCluster, orientation='top', labels=labelList, distance_sort='descending', show_leaf_counts=True)
   plt.show()
 
-def createDocumentCluster(clustersAfterCut, computedTFIDF):
+def createDocumentCluster(clusterAfterCut, computedTFIDF):
   documentClusters=[]
   for i in range(0, computedTFIDF.docCount):
-    documentClusters.append({'id':computedTFIDF.documents[i].getField('NEWID'), 'clusters':{}})
-  for clusterCut in clustersAfterCut:
-    for i in range(0, len(clusterCut)):
-      if clusterCut[i] not in documentClusters[i]['clusters']:
-        documentClusters[i]['clusters'][clusterCut[i]]=True
-  for document in documentClusters:
-    document['clusters']=document['clusters'].keys()
+    # documentClusters.append({'id':computedTFIDF.documents[i].getField('NEWID'), 'clusters':{}})
+    documentClusters.append({'id':computedTFIDF.documents[i].getField('NEWID'), 'clusters':[]})
+
+  allClusters={}
+  for i in range(0, len(clusterAfterCut)):
+    # if len(allClusters)==0 or clusterAfterCut[i]!=allClusters[len(allClusters)-1]: 
+    if clusterAfterCut[i] not in allClusters:
+      # allClusters.append(clusterAfterCut[i])
+      allClusters[clusterAfterCut[i]]=True
+
+    for clusterID in list(allClusters.keys()):
+      documentClusters[i]['clusters'].append(clusterID)
+      # documentClusters[i]['clusters'][clusterID]=True
+
+
+  # for document in documentClusters:
+  #   document['clusters']=list(document['clusters'].keys())
   return documentClusters
 
 def part2(computedTFIDF, calculateSingle=True, calculateComplete=True):
@@ -48,10 +58,9 @@ def part2(computedTFIDF, calculateSingle=True, calculateComplete=True):
     runningTotalTime+=singleClusterTime
     print("Time: " + str(singleClusterTime) + " seconds")
 
-    # print(singleClusterCut[len(singleClusterCut)-2])
-
     print("Creating list of single link clusters each document is contained in...")
-    documentClusters=createDocumentCluster(singleClusterCut, computedTFIDF)
+    finalSingleClustering = singleClusterCut[len(singleClusterCut)-1]
+    documentClusters=createDocumentCluster(finalSingleClustering, computedTFIDF)
     singleTrackingTime = round(time.time() - startTime - runningTotalTime, 3)
     runningTotalTime+=singleTrackingTime
     print("Time: " + str(singleTrackingTime) + " seconds")
@@ -70,10 +79,9 @@ def part2(computedTFIDF, calculateSingle=True, calculateComplete=True):
     runningTotalTime+=completeClusterTime
     print("Time: " + str(completeClusterTime) + " seconds")
 
-    # print(completeClusterCut[len(completeClusterCut)-1])
-
     print("Creating list of complete link clusters each document is contained in...")
-    completeDocumentClusters=createDocumentCluster(completeClusterCut, computedTFIDF)
+    finalCompleteClustering = completeClusterCut[len(completeClusterCut)-1]
+    completeDocumentClusters=createDocumentCluster(finalCompleteClustering, computedTFIDF)
     completeTrackingTime = round(time.time() - startTime - runningTotalTime, 3)
     runningTotalTime+=completeTrackingTime
     print("Time: " + str(completeTrackingTime) + " seconds")
