@@ -85,12 +85,6 @@ def evaluate(clusteringMethod):
 
   return totalSimilarity/docCount
 
-#Test function used as a playground
-def test(clusteringOutput):
-  for doc in clusteringOutput:
-    print(doc['topics'])
-
-  
 def part3(parsedDocuments, singleClustering, completeClustering):
   startTime = time.time()
   runningTotalTime=0
