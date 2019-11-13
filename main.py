@@ -7,7 +7,7 @@ startTime = time.time()
 
 print("\nAgglomerative Clustering by Ashwin Mahesh (@mahesh2)\n")
 
-computedTFIDF = part1(100)
+computedTFIDF = part1("/homes/cs473/project2/reut2-subset.sgm", 100)
 singleDocClusters, completeDocClusters = part2(computedTFIDF)
 part3(computedTFIDF.documents, singleDocClusters, completeDocClusters)
 

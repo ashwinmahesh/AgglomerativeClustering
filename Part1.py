@@ -41,12 +41,12 @@ def getUniqueWords(documents):
         wordIndex+=1
   return output
 
-def part1(maximumDocuments=0):
+def part1(documentPath, maximumDocuments=0):
   startTime = time.time()
   print("Executing code for Part 1...\n")
 
   print("Extracting data from XML Document...")
-  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm", maximumDocuments)
+  values = XMLParse(documentPath, maximumDocuments)
   print("Number of Documents: "+str(len(values)))
   extractionTime = round(time.time() - startTime, 3)
   print("Time: " + str(extractionTime) + " seconds")
