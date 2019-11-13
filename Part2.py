@@ -86,3 +86,5 @@ def part2(computedTFIDF):
 
   print('\nPart 2 Complete')
   print("Execution Time: " + str(round(time.time() - startTime, 3)) + " seconds\n")
+  
+  return documentClusters, completeDocumentClusters
