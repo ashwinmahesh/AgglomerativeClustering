@@ -26,6 +26,25 @@ class XMLDoc:
   def getJSON(self):
     return self.tags
 
+  def extractSubElements(self, tag):
+    if self.hasField(tag)==False:
+      return []
+    token, index = getNextToken(self.tags[tag], 0)
+    subElements = []
+    isOpened=False
+    while(token!='' and index!=-1):
+      if token=='<D>':
+        isOpened = True
+      elif token=='</D>':
+        isOpened = False
+      else:
+        if isOpened:
+          subElements.append(token)
+      token, index = getNextToken(self.tags[tag], index)
+
+    return subElements
+    
+
 #Gets the next token in the list, can confirm it works in the base case
 def getNextToken(text, currentIndex):
   newIndex = currentIndex
@@ -54,6 +73,8 @@ def getNextToken(text, currentIndex):
 
 #Checks if it is a tag, or not
 def isTag(text):
+  if text=='<D>' or text=='</D>':
+    return False
   if(text[0]=='<'):
     return True
   return False
@@ -133,33 +154,33 @@ def XMLParse(filePath,  limit=0, ignoreFirstLine=True):
 
   while(token!='' and index!=-1):
     if(isTag(token)):
-        tag = getTagName(token)
-        if(isOpenTag(token)):
-            tags.append(tag)
-            if(len(tags) == 1):
-              if(hasLimit and currOutputIndex>=limit):
-                break
-              output.append(XMLDoc({}))
-              currOutputIndex+=1
-              specialTags = extractParamsFromTag(token)
-              if specialTags!=False:
-                for additionalInfo in specialTags:
-                  output[currOutputIndex].setField(additionalInfo, specialTags[additionalInfo])
-        else:
-            output[currOutputIndex].setField(tags[len(tags)-1], currTextVal)
-            tags.pop()
-            currTextVal=''
+      tag = getTagName(token)
+      if(isOpenTag(token)):
+        tags.append(tag)
+        if(len(tags) == 1):
+          if(hasLimit and currOutputIndex>=limit):
+            break
+          output.append(XMLDoc({}))
+          currOutputIndex+=1
+          specialTags = extractParamsFromTag(token)
+          if specialTags!=False:
+            for additionalInfo in specialTags:
+              output[currOutputIndex].setField(additionalInfo, specialTags[additionalInfo])
+      else:
+        output[currOutputIndex].setField(tags[len(tags)-1], currTextVal)
+        tags.pop()
+        currTextVal=''
 
     else:
-        currTextVal+=token
-        currTextVal+=' '
+      currTextVal+=token
+      currTextVal+=' '
     token,index=getNextToken(fileText, index)
   file.close()
   return output
 
 if __name__ == "__main__":
-  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm")
-
-  for i in range(0, 2):
+  values = XMLParse("/homes/cs473/project2/reut2-subset.sgm", 10)
+  for i in range(0, 5):
     print(i)
-    print(values[i].getAllFields())
+    print(values[i].getField('TOPICS'))
+    print(values[i].extractSubElements('TOPICS'))
