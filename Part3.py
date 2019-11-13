@@ -46,13 +46,13 @@ def getTopicCountByCluster(cluster):
       topics[topic]+=1
   return topics
 
+#Returns the topics with the highest and second highest number of documents
 def getMaxAndSecondMaxTopics(clusterTopics):
   maxKey=''
   maxCount=0
   secondMaxKey=''
   secondMaxCount=0
   for topic in clusterTopics:
-    # print(topic)
     if clusterTopics[topic] > maxCount:
       secondMaxKey = maxKey
       secondMaxCount = maxCount
@@ -73,9 +73,16 @@ def calculateSimilarityAtOneCluster(cluster, numDocsInCluster):
   secondMaxCount = 1 if secondMaxCount==0 else secondMaxCount
   return maxCount * (math.log(numDocsInCluster, 2) +1) / secondMaxCount
 
-
 #Sums up the similarities for all the clusters then divides by some normalizing factor?
-def evaluate(totalSimilarity):
+def evaluate(clusteringMethod):
+  clustersWithDocuments, docCount = getDocsByCluster(clusteringMethod)
+  removedHigherLevelClusters = cleanupClusters(clustersWithDocuments, 0.4, docCount)
+
+  totalSimilarity=0
+  for clusterID in removedHigherLevelClusters:
+    topicForCluster = getTopicCountByCluster(removedHigherLevelClusters[clusterID])
+    totalSimilarity+=calculateSimilarityAtOneCluster(topicForCluster, len(removedHigherLevelClusters[clusterID]))
+
   return totalSimilarity
 
 #Test function used as a playground
@@ -89,26 +96,15 @@ def part3(parsedDocuments, singleClustering, completeClustering):
   runningTotalTime=0
 
   print("Executing code for Part 3...\n")
-
-  print("Beginning Evaluation of Clustering...")
-  clustersWithDocuments, docCount = getDocsByCluster(singleClustering)
-  removedHigherLevelClustersSingle = cleanupClusters(clustersWithDocuments, 0.4, docCount)
-  # for clusterID in removedHigherLevelClustersSingle:
-  #   print(f'{clusterID}: {getTopicCountByCluster(removedHigherLevelClustersSingle[clusterID])}')
-  totalSimilarity_Single=0
-  # for clusterID in clustersWithDocuments:
-  for clusterID in removedHigherLevelClustersSingle:
-    topicForCluster = getTopicCountByCluster(removedHigherLevelClustersSingle[clusterID])
-    totalSimilarity_Single+=calculateSimilarityAtOneCluster(topicForCluster, len(removedHigherLevelClustersSingle[clusterID]))
-  print(evaluate(totalSimilarity_Single))
-
-  # print(removedHigherLevelClustersSingle)
-
-
-
+  print("Evaluating Single and Complete Link Clustering...")
+  singleEvalScore = evaluate(singleClustering)
+  completeEvalScore=evaluate(completeClustering)
+  print(f'Single Linkage Score: {singleEvalScore}')
+  print(f'Complete Linkage Score: {completeEvalScore}')
   evalTime = round(time.time() - startTime, 3)
   runningTotalTime+=evalTime
   print("Time: " + str(evalTime) + " seconds")
 
   print('\nPart 3 Complete')
   print("Execution Time: " + str(round(time.time() - startTime, 3)) + " seconds\n")
+  return singleEvalScore, completeEvalScore
