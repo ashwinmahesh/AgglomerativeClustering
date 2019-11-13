@@ -18,11 +18,6 @@ class TFIDF:
     if word in self.uniqueWordList:
       return self.uniqueWordList[word]
     return -1
-    # try:
-    #   wordIndex = self.uniqueWordList.index(word)
-    #   return wordIndex
-    # except ValueError:
-    #   return -1
 
   #Calculates Term Frequency
   def calculateTF(self, showTime=False):
