@@ -9,7 +9,7 @@ print("\nAgglomerative Clustering by Ashwin Mahesh (@mahesh2)\n")
 
 computedTFIDF = part1(100)
 singleDocClusters, completeDocClusters = part2(computedTFIDF)
-part3()
+part3(computedTFIDF.documents, singleDocClusters, completeDocClusters)
 
 print('PROGRAM HAS TERMINATED EXECUTION')
 print("Execution Time: " + str(round(time.time() - startTime, 3)) + " seconds")

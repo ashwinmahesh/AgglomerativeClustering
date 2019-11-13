@@ -1,6 +1,10 @@
 import time
 
-def part3():
+def test(documents):
+  for i in range(0, 10):
+    print(documents[i].getJSON())
+
+def part3(parsedDocuments, singeClustering, completeClustering):
   startTime = time.time()
   runningTotalTime=0
 
@@ -10,6 +14,8 @@ def part3():
   evalTime = round(time.time() - startTime, 3)
   runningTotalTime+=evalTime
   print("Time: " + str(evalTime) + " seconds")
+
+  test(parsedDocuments)
 
   print('\nPart 3 Complete')
   print("Execution Time: " + str(round(time.time() - startTime, 3)) + " seconds\n")

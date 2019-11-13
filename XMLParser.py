@@ -21,7 +21,7 @@ class XMLDoc:
     return self
 
   def getAllFields(self):
-    return self.tags.keys()
+    return list(self.tags.keys())
 
   def getJSON(self):
     return self.tags
@@ -86,8 +86,11 @@ def extractParamsFromTag(tag):
     i+=1
   while(tag[i]!=' '):
     i+=1
+  while(tag[i]==' '):
+    i+=1
   nextTag, nextVal='', ''
   isTag=True
+  
   while(i<len(tag)-1):
     if(tag[i]=='='):
       isTag=not isTag
