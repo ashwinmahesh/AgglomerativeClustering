@@ -43,7 +43,7 @@ def getUniqueWords(documents):
 
 def part1(maximumDocuments=0):
   startTime = time.time()
-  print("Executing code for Part 1...")
+  print("Executing code for Part 1...\n")
 
   print("Extracting data from XML Document...")
   values = XMLParse("/homes/cs473/project2/reut2-subset.sgm", maximumDocuments)
