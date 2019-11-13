@@ -2,7 +2,7 @@ import time
 
 def test(documents):
   for i in range(0, 10):
-    print(documents[i].getJSON())
+    print(documents[i].extractSubElements('TOPICS'))
 
 def part3(parsedDocuments, singeClustering, completeClustering):
   startTime = time.time()

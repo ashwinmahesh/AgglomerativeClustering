@@ -26,8 +26,24 @@ class XMLDoc:
   def getJSON(self):
     return self.tags
 
-  def extractTopics(self):
-    pass
+  def extractSubElements(self, tag):
+    if self.hasField(tag)==False:
+      return []
+    token, index = getNextToken(self.tags[tag], 0)
+    subElements = []
+    isOpened=False
+    while(token!='' and index!=-1):
+      if token=='<D>':
+        isOpened = True
+      elif token=='</D>':
+        isOpened = False
+      else:
+        if isOpened:
+          subElements.append(token)
+      token, index = getNextToken(self.tags[tag], index)
+
+    return subElements
+    
 
 #Gets the next token in the list, can confirm it works in the base case
 def getNextToken(text, currentIndex):
@@ -58,7 +74,6 @@ def getNextToken(text, currentIndex):
 #Checks if it is a tag, or not
 def isTag(text):
   if text=='<D>' or text=='</D>':
-    print("Dilemna")
     return False
   if(text[0]=='<'):
     return True
@@ -167,4 +182,5 @@ if __name__ == "__main__":
   values = XMLParse("/homes/cs473/project2/reut2-subset.sgm", 10)
   for i in range(0, 5):
     print(i)
-    print(values[i].getJSON())
+    print(values[i].getField('TOPICS'))
+    print(values[i].extractSubElements('TOPICS'))
